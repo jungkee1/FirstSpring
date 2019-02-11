@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--db jndi 설정  -->
+<bean id="ds" class="org.springframework.jndi.JndiObjectFactoryBean">
+<property name="jndiName">
+	<value>jdbc/spring</value>
+</property>
+<property name="resourceRef" value="true"></property>
+</bean>
+
+<bean id="template" class="org.springframework.jdbc.core.JdbcTemplate">
+<property name="dataSource" ref="ds"/> <!-- ds는 위에 jndi설정에 id ds임 그래서 dataSource에 들어가는 값이 ds다  -->
+</bean>
+
+<!-- dao  -->
+<bean id="dao" class="com.member.model.MemberDAOImpl">
+<property name="template" ref="template"/></bean> <!--MemberDAOImpl 의 멤버변수 template은 ref template를 내용으로 갖는다 (위에있음)  -->
+
+
+<!-- 그냥 연습삼아 test용  -->
+<bean name="/test.do" class="com.test.controller.TestController"/>
+
+<!--controller 설정  -->
+<!-- insert form  -->
+<bean name="/member_form_insert.do" class="com.test.controller.MemberFormInsert"/>
+
+<!-- insert  -->
+<bean name="/member_insert.do" class="com.test.controller.MemberInsert">
+<property name="dao" ref="dao"></property> <!--dao 라는 멤버변수  (dao를 참조하는)-->
+									<!--즉  MemberInsert에 dao값을 dao라는 멤버변수에 담아서 감 그래서 거기에 setter를 설정함  -->
+</bean>
+
+<!-- list  -->
+<bean name="/member_list.do" class="com.test.controller.MemberList">
+<property name="dao" ref="dao"/>
+</bean>
+
+<!--delete  -->
+<bean name="/member_delete.do" class="com.test.controller.MemberDelete">
+<property name="dao" ref="dao"></property>
+</bean>
+
+<!--detail  -->
+<bean name="/member_detail.do" class="com.test.controller.MemberDetail">
+<property name="dao" ref="dao"></property>
+</bean>
+
+<!-- update -->
+<bean name="/member_update.do" class="com.test.controller.MemberUpdate">
+<property name="dao" ref="dao"></property>
+</bean>
+
+</beans>
